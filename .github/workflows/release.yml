@@ -1,0 +1,72 @@
+---
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      - name: Generate version
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/v* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION="1.0.${{ github.run_number }}"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Generated version: $VERSION"
+
+      - name: Build binaries
+        run: |
+          make build VERSION=${{ steps.version.outputs.VERSION }}
+          ls -lh build/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.VERSION }}
+          name: Release v${{ steps.version.outputs.VERSION }}
+          body: |
+            ## Local Clipboard v${{ steps.version.outputs.VERSION }}
+
+            ### Downloads
+            - **macOS (Intel)**: `local-clipboard-${{ steps.version.outputs.VERSION }}-darwin-amd64`
+            - **macOS (Apple Silicon)**: `local-clipboard-${{ steps.version.outputs.VERSION }}-darwin-arm64`
+            - **Linux (amd64)**: `local-clipboard-${{ steps.version.outputs.VERSION }}-linux-amd64`
+            - **Windows (amd64)**: `local-clipboard-${{ steps.version.outputs.VERSION }}-windows-amd64.exe`
+
+            **Self-contained binaries** - All web assets are embedded. No external files needed!
+
+            ### Usage
+            1. Download the binary for your platform
+            2. Make it executable (Unix): `chmod +x local-clipboard-*`
+            3. Run it: `./local-clipboard-*` (or `.exe` on Windows)
+            4. Open the URL shown in the terminal
+
+            Built from commit: ${{ github.sha }}
+          files: |
+            build/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
