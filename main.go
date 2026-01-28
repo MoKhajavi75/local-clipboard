@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"encoding/base64"
 	"flag"
 	"fmt"
@@ -8,13 +9,14 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"os"
-	"strings"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
 )
+
+//go:embed web/*
+var webFS embed.FS
 
 var Version = "dev"
 
@@ -242,25 +244,35 @@ func main() {
 	hub := newHub(fileStore)
 	go hub.run()
 
-	// Serve static files from web directory
+	// Serve static files from embedded filesystem
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 		w.Header().Set("Pragma", "no-cache")
 		w.Header().Set("Expires", "0")
 		if r.URL.Path == "/" {
-			data, err := os.ReadFile("web/index.html")
+			data, err := webFS.ReadFile("web/index.html")
 			if err != nil {
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 				return
 			}
 			w.Header().Set("Content-Type", "text/html")
-			w.Write([]byte(strings.ReplaceAll(string(data), "{{VERSION}}", Version)))
+			w.Write(data)
 		} else if r.URL.Path == "/styles.css" {
 			w.Header().Set("Content-Type", "text/css")
-			http.ServeFile(w, r, "web/styles.css")
+			data, err := webFS.ReadFile("web/styles.css")
+			if err != nil {
+				http.NotFound(w, r)
+				return
+			}
+			w.Write(data)
 		} else if r.URL.Path == "/script.js" {
 			w.Header().Set("Content-Type", "application/javascript")
-			http.ServeFile(w, r, "web/script.js")
+			data, err := webFS.ReadFile("web/script.js")
+			if err != nil {
+				http.NotFound(w, r)
+				return
+			}
+			w.Write(data)
 		} else {
 			http.NotFound(w, r)
 		}
