@@ -9,6 +9,9 @@ BINARY_NAME=local-clipboard
 # Build output directory
 BUILD_DIR=build
 
+# Version (can be overridden: make build VERSION=1.2.3)
+VERSION ?= dev
+
 # Linker flags to inject version
 LDFLAGS=-ldflags "-X main.Version=$(VERSION)"
 
@@ -19,8 +22,8 @@ help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-15s %s\n", $$1, $$2}'
 
 run: ## Run the server
-	@echo "Starting $(BINARY_NAME) v$(VERSION) on port $(PORT)..."
-	@-go run -mod=vendor $(LDFLAGS) main.go -port $(PORT)
+	@echo "Starting $(BINARY_NAME) on port $(PORT)..."
+	@-go run -mod=vendor main.go -port $(PORT)
 
 build: ## Build for macOS, Linux and Windows
 	@mkdir -p $(BUILD_DIR)
