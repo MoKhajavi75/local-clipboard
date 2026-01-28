@@ -1,6 +1,4 @@
-.PHONY: help run build install vendor
-
-VERSION=1.0
+.PHONY: help run build update
 
 # Default port
 PORT ?= 8080
@@ -38,16 +36,11 @@ build: ## Build for macOS, Linux and Windows
 	@echo ""
 	@echo "Binaries created in ./$(BUILD_DIR)"
 
-install: ## Install dependencies
-	@echo "Installing dependencies..."
-	@go mod download
-	@go mod tidy
-	@echo "Dependencies installed."
-
-vendor: ## Vendorize dependencies
-	@echo "Vendorizing dependencies..."
+update: ## Update, install and vendor dependencies
+	@echo "Updating dependencies..."
+	@go get -u
 	@go mod tidy
 	@go mod vendor
-	@echo "Dependencies vendored."
+	@echo "Dependencies updated and vendored."
 
 .DEFAULT_GOAL := help
