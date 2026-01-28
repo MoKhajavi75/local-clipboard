@@ -18,7 +18,7 @@ A simple, elegant local network clipboard/chat application. Share text and files
 
 ### Prerequisites
 
-- Go 1.21 or later installed
+- Go 1.25 or later installed
 - Devices connected to the same local network
 
 ### Quick Start
@@ -91,10 +91,8 @@ Look for "IPv4 Address" under your active network adapter.
 This project includes vendored dependencies for completely offline operation. If you need to update dependencies:
 
 ```bash
-make vendor
+make update
 ```
-
-This downloads all dependencies into the `vendor/` directory. After that, the project runs completely offline.
 
 ## Building Binaries
 
@@ -113,10 +111,10 @@ Binaries will be created in the `build/` directory for:
 Run the binary:
 
 ```bash
-./build/local-clipboard-1.0-darwin-arm64        # macOS Apple Silicon
-./build/local-clipboard-1.0-darwin-amd64        # macOS Intel
-./build/local-clipboard-1.0-linux-amd64         # Linux
-./build/local-clipboard-1.0-windows-amd64.exe   # Windows
+./build/local-clipboard-dev-darwin-arm64        # macOS Apple Silicon
+./build/local-clipboard-dev-darwin-amd64        # macOS Intel
+./build/local-clipboard-dev-linux-amd64         # Linux
+./build/local-clipboard-dev-windows-amd64.exe   # Windows
 ```
 
 ## Notes
@@ -128,12 +126,27 @@ Run the binary:
 - Files are temporarily stored in memory (lost on server restart)
 - No data leaves your local network
 
-## Advanced Commands
+## Creating Releases
+
+To create a new release, push a version tag:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+This will automatically:
+- Build binaries for all platforms (macOS, Linux, Windows)
+- Create a GitHub release with the version
+- Upload self-contained binaries with embedded web assets
+- Display the version in the web UI
+
+Download prebuilt binaries from the [Releases](../../releases) page.
+
+## Help
 
 ```bash
 make help      # Show all available commands
-make install   # Install/update Go dependencies
-make vendor    # Update vendored dependencies
 ```
 
 Enjoy your local clipboard! 🎉
