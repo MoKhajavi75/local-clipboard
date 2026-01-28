@@ -282,4 +282,15 @@ messageInput.addEventListener('input', function () {
   updateSendButton();
 });
 
+// Fetch and display version
+fetch('/api/version')
+  .then(response => response.text())
+  .then(version => {
+    const versionSpan = document.querySelector('.version');
+    if (versionSpan) {
+      versionSpan.textContent = `v${version.trim()}`;
+    }
+  })
+  .catch(err => console.error('Failed to fetch version:', err));
+
 connect();

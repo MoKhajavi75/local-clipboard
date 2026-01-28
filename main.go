@@ -266,6 +266,12 @@ func main() {
 		}
 	})
 
+	// Version endpoint
+	http.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain")
+		w.Write([]byte(Version))
+	})
+
 	http.HandleFunc("/ws", hub.handleWebSocket)
 
 	// File upload endpoint
