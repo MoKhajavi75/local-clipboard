@@ -3,8 +3,6 @@ name: Build and Release
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
 
@@ -28,11 +26,7 @@ jobs:
       - name: Generate version
         id: version
         run: |
-          if [[ $GITHUB_REF == refs/tags/v* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/v}
-          else
-            VERSION="1.0.${{ github.run_number }}"
-          fi
+          VERSION=${GITHUB_REF#refs/tags/v}
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Generated version: $VERSION"
 
