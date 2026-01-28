@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Local Clipboard</title>
+    <link
+      rel="stylesheet"
+      href="styles.css?v={{VERSION}}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>📋 Local Clipboard <span class="version">v{{VERSION}}</span></h1>
+      <div
+        id="status"
+        class="status disconnected"
+      >
+        Connecting...
+      </div>
+
+      <div
+        class="messages"
+        id="messages"
+      >
+        <div class="empty-state">No messages yet. Start typing!</div>
+      </div>
+
+      <div class="input-area">
+        <textarea
+          id="messageInput"
+          placeholder="Type your message... (Shift+Enter for new line)"
+          disabled
+          autocomplete="off"
+          rows="3"
+        ></textarea>
+        <div class="input-buttons">
+          <input
+            type="file"
+            id="fileInput"
+            disabled
+            style="display: none"
+          />
+          <label
+            for="fileInput"
+            id="fileLabel"
+            class="icon-btn"
+            >📎</label
+          >
+          <button
+            id="sendButton"
+            class="icon-btn"
+            disabled
+          >
+            ➤
+          </button>
+        </div>
+        <span
+          id="fileName"
+          class="file-name"
+        ></span>
+      </div>
+    </div>
+
+    <script src="script.js?v={{VERSION}}"></script>
+  </body>
+</html>
