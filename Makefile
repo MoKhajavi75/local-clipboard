@@ -28,10 +28,10 @@ run: ## Run the server
 build: ## Build for macOS, Linux and Windows
 	@mkdir -p $(BUILD_DIR)
 	@echo "Building v$(VERSION)..."
-	@echo "  macOS (amd64)..."
-	@GOOS=darwin GOARCH=amd64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 main.go
-	@echo "  macOS (arm64)..."
-	@GOOS=darwin GOARCH=arm64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-darwin-arm64 main.go
+	@echo "  macOS (Intel)..."
+	@GOOS=darwin GOARCH=amd64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-mac-intel main.go
+	@echo "  macOS (Silicon)..."
+	@GOOS=darwin GOARCH=arm64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-mac-silicon main.go
 	@echo "  Linux (amd64)..."
 	@GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 main.go
 	@echo "  Windows (amd64)..."

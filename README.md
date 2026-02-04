@@ -24,8 +24,8 @@ A simple, elegant local network clipboard/chat application. Share text and files
 
 Download the latest prebuilt binary for your operating system from the [Releases](../../releases) page:
 
-- **macOS**: Download `local-clipboard-vX.X.X-darwin-arm64` (Apple Silicon) or `local-clipboard-vX.X.X-darwin-amd64` (Intel)
-- **Linux**: Download `local-clipboard-vX.X.X-linux-amd64`
+- **macOS**: Download `local-clipboard-vX.X.X-mac-silicon` (Apple Silicon) or `local-clipboard-vX.X.X-darwin-amd64` (Intel)
+- **Linux**: Download `local-clipboard-vX.X.X-mac-intel`
 - **Windows**: Download `local-clipboard-vX.X.X-windows-amd64.exe`
 
 All binaries are self-contained with embedded web assets - no additional dependencies required.
