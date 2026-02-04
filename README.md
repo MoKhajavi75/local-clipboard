@@ -88,6 +88,9 @@ If you prefer to build from source:
 # Show all available commands
 make help
 
+# Install dependencies
+go mod download
+
 # Run the server (default port 8080)
 make run
 
@@ -98,7 +101,15 @@ make run PORT=3000
 make build
 ```
 
-The project includes vendored dependencies for completely offline operation.
+### Offline Development
+
+If you need to work offline, you can vendor the dependencies:
+
+```bash
+go mod vendor
+```
+
+This will download all dependencies into a `vendor/` directory for offline use.
 
 ## Creating Releases
 

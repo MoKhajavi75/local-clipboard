@@ -25,6 +25,9 @@ jobs:
         with:
           go-version: '1.16'
 
+      - name: Download dependencies
+        run: go mod download
+
       - name: Generate version
         id: version
         run: |

@@ -23,27 +23,26 @@ help: ## Show this help message
 
 run: ## Run the server
 	@echo "Starting $(BINARY_NAME) on port $(PORT)..."
-	@-go run -mod=vendor main.go -port $(PORT)
+	@-go run main.go -port $(PORT)
 
 build: ## Build for macOS, Linux and Windows
 	@mkdir -p $(BUILD_DIR)
 	@echo "Building v$(VERSION)..."
 	@echo "  macOS (amd64)..."
-	@GOOS=darwin GOARCH=amd64 go build -mod=vendor $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 main.go
+	@GOOS=darwin GOARCH=amd64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-darwin-amd64 main.go
 	@echo "  macOS (arm64)..."
-	@GOOS=darwin GOARCH=arm64 go build -mod=vendor $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-darwin-arm64 main.go
+	@GOOS=darwin GOARCH=arm64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-darwin-arm64 main.go
 	@echo "  Linux (amd64)..."
-	@GOOS=linux GOARCH=amd64 go build -mod=vendor $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 main.go
+	@GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-linux-amd64 main.go
 	@echo "  Windows (amd64)..."
-	@GOOS=windows GOARCH=amd64 go build -mod=vendor $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe main.go
+	@GOOS=windows GOARCH=amd64 go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$(VERSION)-windows-amd64.exe main.go
 	@echo ""
 	@echo "Binaries created in ./$(BUILD_DIR)"
 
-update: ## Update, install and vendor dependencies
+update: ## Update dependencies
 	@echo "Updating dependencies..."
 	@go get -u
 	@go mod tidy
-	@go mod vendor
-	@echo "Dependencies updated and vendored."
+	@echo "Dependencies updated."
 
 .DEFAULT_GOAL := help

@@ -33,5 +33,5 @@ bin/
 *.tmp
 *.log
 
-# Keep vendor directory (for offline use)
-!vendor/
+# Vendor directory
+vendor/
