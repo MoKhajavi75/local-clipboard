@@ -306,15 +306,145 @@ messageInput.addEventListener('input', function () {
   updateSendButton();
 });
 
-// Fetch and display version
-fetch('/api/version')
-  .then(response => response.text())
-  .then(version => {
+// Update checker functionality
+let currentVersion = null;
+let latestReleaseUrl = null;
+
+async function checkForUpdates() {
+  try {
+    // Fetch current version from server
+    const versionResponse = await fetch('/api/version');
+    const version = await versionResponse.text();
+    currentVersion = version.trim();
+
+    // Update version display
     const versionSpan = document.querySelector('.version');
     if (versionSpan) {
-      versionSpan.textContent = `v${version.trim()}`;
+      versionSpan.textContent = `v${currentVersion}`;
     }
-  })
-  .catch(err => console.error('Failed to fetch version:', err));
+
+    // Check GitHub for latest release
+    const githubResponse = await fetch(
+      'https://api.github.com/repos/MoKhajavi75/local-clipboard/releases/latest',
+      { cache: 'no-cache' }
+    );
+
+    if (!githubResponse.ok) {
+      console.log('Unable to check for updates');
+      return;
+    }
+
+    const release = await githubResponse.json();
+    const latestVersion = release.tag_name.replace(/^v/, ''); // Remove 'v' prefix if present
+
+    // Compare versions
+    if (compareVersions(latestVersion, currentVersion) > 0) {
+      // Detect user's platform and find matching asset
+      const platformInfo = detectPlatform();
+      const matchingAsset = release.assets.find(asset => {
+        const name = asset.name.toLowerCase();
+        return name.includes(platformInfo.os) && name.includes(platformInfo.arch);
+      });
+
+      if (matchingAsset) {
+        latestReleaseUrl = matchingAsset.browser_download_url;
+      } else {
+        // Fallback to release page if no matching asset found
+        latestReleaseUrl = release.html_url;
+      }
+
+      showUpdateBanner(latestVersion);
+    }
+  } catch (error) {
+    // Silently fail - app works offline
+    console.log('Update check skipped (offline or error):', error.message);
+  }
+}
+
+function detectPlatform() {
+  const userAgent = navigator.userAgent.toLowerCase();
+  const platform = navigator.platform.toLowerCase();
+
+  // Detect OS
+  let os = 'linux';
+  if (platform.includes('win') || userAgent.includes('windows')) {
+    os = 'windows';
+  } else if (platform.includes('mac') || userAgent.includes('mac')) {
+    os = 'darwin';
+  }
+
+  // Detect architecture
+  let arch = 'amd64';
+  if (platform.includes('arm') || userAgent.includes('arm64') || userAgent.includes('aarch64')) {
+    arch = 'arm64';
+  }
+
+  return { os, arch };
+}
+
+function compareVersions(v1, v2) {
+  const parts1 = v1.split('.').map(Number);
+  const parts2 = v2.split('.').map(Number);
+
+  for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+    const num1 = parts1[i] || 0;
+    const num2 = parts2[i] || 0;
+
+    if (num1 > num2) return 1;
+    if (num1 < num2) return -1;
+  }
+
+  return 0;
+}
+
+function showUpdateBanner(version) {
+  const banner = document.getElementById('updateBanner');
+  const versionSpan = document.getElementById('latestVersion');
+
+  if (banner && versionSpan) {
+    versionSpan.textContent = `v${version}`;
+    banner.style.display = 'block';
+  }
+}
+
+async function downloadUpdate() {
+  if (!latestReleaseUrl) {
+    alert('Unable to download update. Please visit the GitHub releases page.');
+    return;
+  }
+
+  // For binary downloads, simply open the download URL in a new tab
+  // The browser will handle the download automatically
+  window.open(latestReleaseUrl, '_blank');
+
+  // Update button to show success
+  const downloadBtn = document.getElementById('downloadUpdate');
+  const originalText = downloadBtn.textContent;
+  downloadBtn.textContent = '✓ Started!';
+  downloadBtn.disabled = true;
+
+  setTimeout(() => {
+    downloadBtn.textContent = originalText;
+    downloadBtn.disabled = false;
+  }, 2000);
+}
+
+function dismissUpdateBanner() {
+  const banner = document.getElementById('updateBanner');
+  if (banner) {
+    banner.classList.add('hiding');
+    setTimeout(() => {
+      banner.style.display = 'none';
+      banner.classList.remove('hiding');
+    }, 300); // Match animation duration
+  }
+}
+
+// Set up event listeners for update banner
+document.getElementById('downloadUpdate')?.addEventListener('click', downloadUpdate);
+document.getElementById('dismissUpdate')?.addEventListener('click', dismissUpdateBanner);
+
+// Check for updates on page load
+checkForUpdates();
 
 connect();

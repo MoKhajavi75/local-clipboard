@@ -13,6 +13,31 @@
     />
   </head>
   <body>
+    <div
+      id="updateBanner"
+      class="update-banner"
+      style="display: none"
+    >
+      <div class="update-content">
+        <span class="update-icon">🔔</span>
+        <span class="update-text">
+          New version <strong id="latestVersion"></strong> available!
+        </span>
+        <button
+          id="downloadUpdate"
+          class="update-btn"
+        >
+          Download
+        </button>
+        <button
+          id="dismissUpdate"
+          class="update-dismiss"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+
     <div class="container">
       <h1>📋 Local Clipboard</h1>
       <div
@@ -37,10 +62,23 @@
           autocomplete="off"
           rows="3"
         ></textarea>
-        <div id="fileAttachment" class="file-attachment" style="display: none;">
+        <div
+          id="fileAttachment"
+          class="file-attachment"
+          style="display: none"
+        >
           <span class="file-attachment-icon">📎</span>
-          <span id="fileName" class="file-attachment-name"></span>
-          <button id="removeFile" class="file-attachment-remove" title="Remove file">✕</button>
+          <span
+            id="fileName"
+            class="file-attachment-name"
+          ></span>
+          <button
+            id="removeFile"
+            class="file-attachment-remove"
+            title="Remove file"
+          >
+            ✕
+          </button>
         </div>
         <div class="input-buttons">
           <input
@@ -72,7 +110,12 @@
         <span class="separator">•</span>
         <span class="credits">
           Made with <span class="heart">❤️</span> by
-          <a href="https://github.com/MoKhajavi75/local-clipboard" target="_blank" rel="noopener noreferrer">MoKhajavi75</a>
+          <a
+            href="https://github.com/MoKhajavi75/local-clipboard"
+            target="_blank"
+            rel="noopener noreferrer"
+            >MoKhajavi75</a
+          >
         </span>
       </div>
     </footer>
