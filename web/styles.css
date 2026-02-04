@@ -10,9 +10,11 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px;
+  gap: 15px;
 }
 
 .container {
@@ -407,6 +409,74 @@ h1 {
   font-style: italic;
 }
 
+/* Footer */
+.footer {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9em;
+}
+
+.footer .version {
+  font-size: 1em;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.footer .separator {
+  opacity: 0.6;
+}
+
+.footer .credits {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer .heart {
+  color: #ff6b6b;
+  animation: heartbeat 1.5s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  10%, 30% {
+    transform: scale(1.1);
+  }
+  20%, 40% {
+    transform: scale(1);
+  }
+}
+
+.footer a {
+  color: rgba(255, 255, 255, 0.95);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 1px;
+}
+
+.footer a:hover {
+  color: white;
+  border-bottom-color: white;
+  transform: translateY(-1px);
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -429,6 +499,12 @@ h1 {
 @media (max-width: 768px) {
   body {
     padding: 10px;
+    gap: 12px;
+  }
+
+  .footer-content {
+    font-size: 0.85em;
+    gap: 8px;
   }
 
   .container {
@@ -499,6 +575,11 @@ h1 {
   }
 
   .input-area {
+    gap: 6px;
+  }
+
+  .footer-content {
+    font-size: 0.8em;
     gap: 6px;
   }
 }
