@@ -221,15 +221,37 @@ func (h *Hub) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 }
 
 func getLocalIP() string {
-	addrs, err := net.InterfaceAddrs()
+	ifaces, err := net.Interfaces()
 	if err != nil {
 		return ""
 	}
 
-	for _, addr := range addrs {
-		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
-			if ipnet.IP.To4() != nil {
-				return ipnet.IP.String()
+	// Iterate through network interfaces
+	for _, iface := range ifaces {
+		// Skip interfaces that are down or loopback
+		if iface.Flags&net.FlagUp == 0 || iface.Flags&net.FlagLoopback != 0 {
+			continue
+		}
+
+		addrs, err := iface.Addrs()
+		if err != nil {
+			continue
+		}
+
+		for _, addr := range addrs {
+			if ipnet, ok := addr.(*net.IPNet); ok {
+				ip := ipnet.IP.To4()
+				if ip != nil {
+					if ip.IsLoopback() {
+						continue
+					}
+					// Skip APIPA addresses (169.254.0.0/16) - these are auto-assigned when DHCP fails
+					if ip[0] == 169 && ip[1] == 254 {
+						continue
+					}
+					// Return the first valid private IP address
+					return ip.String()
+				}
 			}
 		}
 	}
