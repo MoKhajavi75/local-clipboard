@@ -37,6 +37,11 @@
           autocomplete="off"
           rows="3"
         ></textarea>
+        <div id="fileAttachment" class="file-attachment" style="display: none;">
+          <span class="file-attachment-icon">📎</span>
+          <span id="fileName" class="file-attachment-name"></span>
+          <button id="removeFile" class="file-attachment-remove" title="Remove file">✕</button>
+        </div>
         <div class="input-buttons">
           <input
             type="file"
@@ -58,10 +63,6 @@
             ➤
           </button>
         </div>
-        <span
-          id="fileName"
-          class="file-name"
-        ></span>
       </div>
     </div>
 

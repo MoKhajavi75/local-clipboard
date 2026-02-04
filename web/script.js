@@ -5,6 +5,8 @@ const statusDiv = document.getElementById('status');
 const fileInput = document.getElementById('fileInput');
 const fileLabel = document.getElementById('fileLabel');
 const fileName = document.getElementById('fileName');
+const fileAttachment = document.getElementById('fileAttachment');
+const removeFileButton = document.getElementById('removeFile');
 
 let ws = null;
 let isOwnMessage = false;
@@ -240,12 +242,9 @@ async function sendMessage() {
 
   messageInput.value = '';
   messageInput.style.height = 'auto';
-  selectedFile = null;
-  fileInput.value = '';
-  fileName.textContent = '';
+  clearFile();
   fileLabel.textContent = '📎';
   sendButton.textContent = '➤';
-  updateSendButton();
   messageInput.focus();
 }
 
@@ -255,16 +254,41 @@ function updateSendButton() {
   sendButton.disabled = !hasText && !hasFile;
 }
 
+function clearFile(animated = true) {
+  if (animated && fileAttachment.style.display !== 'none') {
+    fileAttachment.classList.add('removing');
+    setTimeout(() => {
+      selectedFile = null;
+      fileName.textContent = '';
+      fileAttachment.style.display = 'none';
+      fileAttachment.classList.remove('removing');
+      fileInput.value = '';
+      updateSendButton();
+    }, 300);
+  } else {
+    selectedFile = null;
+    fileName.textContent = '';
+    fileAttachment.style.display = 'none';
+    fileAttachment.classList.remove('removing');
+    fileInput.value = '';
+    updateSendButton();
+  }
+}
+
 fileInput.addEventListener('change', e => {
   const file = e.target.files[0];
   if (file) {
     selectedFile = file;
     fileName.textContent = file.name;
+    fileAttachment.style.display = 'flex';
   } else {
-    selectedFile = null;
-    fileName.textContent = '';
+    clearFile();
   }
   updateSendButton();
+});
+
+removeFileButton.addEventListener('click', () => {
+  clearFile();
 });
 
 sendButton.addEventListener('click', sendMessage);

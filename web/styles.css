@@ -302,14 +302,102 @@ h1 {
   transform: none;
 }
 
-.file-name {
-  width: 100%;
-  font-size: 0.85em;
-  color: #6c757d;
-  font-style: italic;
+.file-attachment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.3s ease;
+}
+
+.file-attachment.removing {
+  animation: slideOut 0.3s cubic-bezier(0.36, 0, 0.66, -0.56) forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.95);
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 100px;
+    margin-bottom: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 100px;
+    margin-bottom: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.95);
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.file-attachment-icon {
+  font-size: 1.2em;
+  flex-shrink: 0;
+}
+
+.file-attachment-name {
+  flex: 1;
+  font-size: 0.9em;
+  color: #ffffff;
+  font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.file-attachment-remove {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 1em;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.file-attachment-remove:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.file-attachment-remove:active {
+  transform: scale(0.95);
 }
 
 .empty-state {
