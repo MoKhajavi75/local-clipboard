@@ -271,7 +271,8 @@ func main() {
 		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 		w.Header().Set("Pragma", "no-cache")
 		w.Header().Set("Expires", "0")
-		if r.URL.Path == "/" {
+		switch r.URL.Path {
+		case "/":
 			data, err := webFS.ReadFile("web/index.html")
 			if err != nil {
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -279,7 +280,7 @@ func main() {
 			}
 			w.Header().Set("Content-Type", "text/html")
 			w.Write(data)
-		} else if r.URL.Path == "/styles.css" {
+		case "/styles.css":
 			w.Header().Set("Content-Type", "text/css")
 			data, err := webFS.ReadFile("web/styles.css")
 			if err != nil {
@@ -287,7 +288,7 @@ func main() {
 				return
 			}
 			w.Write(data)
-		} else if r.URL.Path == "/script.js" {
+		case "/script.js":
 			w.Header().Set("Content-Type", "application/javascript")
 			data, err := webFS.ReadFile("web/script.js")
 			if err != nil {
@@ -295,7 +296,7 @@ func main() {
 				return
 			}
 			w.Write(data)
-		} else {
+		default:
 			http.NotFound(w, r)
 		}
 	})
