@@ -2,6 +2,10 @@
 
 A simple, elegant local network clipboard/chat application. Share text and files between devices on your local network without internet.
 
+<p align="center">
+  <img src="./assets/screenshot.jpeg" alt="Local Clipboard Screenshot" width="700">
+</p>
+
 ## Features
 
 - ✨ Beautiful, modern UI with gradient design
@@ -14,16 +18,71 @@ A simple, elegant local network clipboard/chat application. Share text and files
 - 🎨 Responsive design for all screen sizes
 - 🔒 Local network only - no data leaves your network
 
-## Setup
+## Getting Started
+
+### Download Latest Release
+
+Download the latest prebuilt binary for your operating system from the [Releases](../../releases) page:
+
+- **macOS**: Download `local-clipboard-vX.X.X-darwin-arm64` (Apple Silicon) or `local-clipboard-vX.X.X-darwin-amd64` (Intel)
+- **Linux**: Download `local-clipboard-vX.X.X-linux-amd64`
+- **Windows**: Download `local-clipboard-vX.X.X-windows-amd64.exe`
+
+All binaries are self-contained with embedded web assets - no additional dependencies required.
+
+### Run the Application
+
+**macOS/Linux:**
+
+```bash
+# Make it executable
+chmod +x ./local-clipboard-*
+
+# Run the server (default port 8080)
+./local-clipboard-*
+
+# Or with custom port
+./local-clipboard-* -port 3000
+```
+
+**Windows:**
+
+```bash
+# Run the server
+local-clipboard-*.exe
+
+# Or with custom port
+local-clipboard-*.exe -port 3000
+```
+
+The terminal will display the server URLs for both localhost and your local network IP.
+
+## Usage
+
+1. **On your laptop/desktop:**
+   - Open `http://localhost:8080`
+
+2. **On your phone/tablet:**
+   - Open `http://<your-ip>:8080` (e.g., `http://192.168.1.100:8080`)
+   - The exact URL is shown in the terminal when you start the server
+
+3. **Start sharing:**
+   - Type a message and press Enter to send (Shift+Enter for new line)
+   - Click the 📎 button to attach a file
+   - Messages and files appear instantly on all connected devices
+   - Click "Copy" to copy text to clipboard
+   - Click "Download" to save files
+
+## Building from Source
+
+If you prefer to build from source:
 
 ### Prerequisites
 
 - Go 1.25 or later installed
 - Devices connected to the same local network
 
-### Quick Start
-
-**Using Makefile (recommended):**
+### Build and Run
 
 ```bash
 # Show all available commands
@@ -35,96 +94,11 @@ make run
 # Run with custom port
 make run PORT=3000
 
-# Build for multiple platforms (macOS, Linux, Windows)
+# Build for multiple platforms
 make build
 ```
 
-The project includes vendored dependencies, so it works completely offline after cloning.
-
-## Usage
-
-1. **Start the server:**
-
-```bash
-make run
-```
-
-The terminal will show the server URLs for both localhost and your local network IP.
-
-2. **On your laptop:**
-
-- Open `http://localhost:8080`
-
-3. **On your phone/tablet:**
-
-- Open `http://<your-laptop-ip>:8080` (e.g., `http://192.168.1.100:8080`)
-- The exact URL is shown in the terminal when you start the server
-
-4. **Start sharing:**
-
-- Type a message and press Enter to send (Shift+Enter for new line)
-- Click the 📎 button to attach a file
-- Messages and files appear instantly on all connected devices
-- Click "Copy" to copy text to clipboard
-- Click "Download" to save files
-
-## Find Your Local IP Address
-
-The server displays your IP address when it starts. If you need to find it manually:
-
-**macOS/Linux:**
-
-```bash
-ifconfig | grep "inet " | grep -v 127.0.0.1
-```
-
-**Windows:**
-
-```bash
-ipconfig
-```
-
-Look for "IPv4 Address" under your active network adapter.
-
-## Offline Mode
-
-This project includes vendored dependencies for completely offline operation. If you need to update dependencies:
-
-```bash
-make update
-```
-
-## Building Binaries
-
-Build for multiple platforms (macOS, Linux, Windows):
-
-```bash
-make build
-```
-
-Binaries will be created in the `build/` directory for:
-
-- macOS (Intel & Apple Silicon)
-- Linux (amd64)
-- Windows (amd64)
-
-Run the binary:
-
-```bash
-./build/local-clipboard-dev-darwin-arm64        # macOS Apple Silicon
-./build/local-clipboard-dev-darwin-amd64        # macOS Intel
-./build/local-clipboard-dev-linux-amd64         # Linux
-./build/local-clipboard-dev-windows-amd64.exe   # Windows
-```
-
-## Notes
-
-- All data is stored in memory and cleared when the server stops
-- Works only on local network - no internet required
-- Multiple devices can connect simultaneously
-- Real-time synchronization across all connected devices
-- Files are temporarily stored in memory (lost on server restart)
-- No data leaves your local network
+The project includes vendored dependencies for completely offline operation.
 
 ## Creating Releases
 
@@ -136,17 +110,19 @@ git push origin v1.0.0
 ```
 
 This will automatically:
+
 - Build binaries for all platforms (macOS, Linux, Windows)
 - Create a GitHub release with the version
 - Upload self-contained binaries with embedded web assets
 - Display the version in the web UI
 
-Download prebuilt binaries from the [Releases](../../releases) page.
+## Notes
 
-## Help
-
-```bash
-make help      # Show all available commands
-```
+- All data is stored in memory and cleared when the server stops
+- Works only on local network - no internet required
+- Multiple devices can connect simultaneously
+- Real-time synchronization across all connected devices
+- Files are temporarily stored in memory (lost on server restart)
+- No data leaves your local network
 
 Enjoy your local clipboard! 🎉
