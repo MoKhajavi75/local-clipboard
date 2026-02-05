@@ -24,8 +24,8 @@ A simple, elegant local network clipboard/chat application. Share text and files
 
 Download the latest prebuilt binary for your operating system from the [Releases](../../releases) page:
 
-- **macOS**: Download `local-clipboard-vX.X.X-mac-silicon` (Apple Silicon) or `local-clipboard-vX.X.X-darwin-amd64` (Intel)
-- **Linux**: Download `local-clipboard-vX.X.X-mac-intel`
+- **macOS**: Download `local-clipboard-vX.X.X-mac-silicon` or `local-clipboard-vX.X.X-mac-intel`
+- **Linux**: Download `local-clipboard-vX.X.X-linux-amd64`
 - **Windows**: Download `local-clipboard-vX.X.X-windows-amd64.exe`
 
 All binaries are self-contained with embedded web assets - no additional dependencies required.
@@ -110,30 +110,5 @@ go mod vendor
 ```
 
 This will download all dependencies into a `vendor/` directory for offline use.
-
-## Creating Releases
-
-To create a new release, push a version tag:
-
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
-
-This will automatically:
-
-- Build binaries for all platforms (macOS, Linux, Windows)
-- Create a GitHub release with the version
-- Upload self-contained binaries with embedded web assets
-- Display the version in the web UI
-
-## Notes
-
-- All data is stored in memory and cleared when the server stops
-- Works only on local network - no internet required
-- Multiple devices can connect simultaneously
-- Real-time synchronization across all connected devices
-- Files are temporarily stored in memory (lost on server restart)
-- No data leaves your local network
 
 Enjoy your local clipboard! 🎉
