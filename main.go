@@ -9,10 +9,13 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/mdp/qrterminal/v3"
+	"github.com/skip2/go-qrcode"
 )
 
 //go:embed web/*
@@ -307,6 +310,26 @@ func main() {
 		w.Write([]byte(Version))
 	})
 
+	// QR code endpoint
+	http.HandleFunc("/qr", func(w http.ResponseWriter, r *http.Request) {
+		localIP := getLocalIP()
+		if localIP == "" {
+			http.Error(w, "Unable to determine local IP", http.StatusInternalServerError)
+			return
+		}
+
+		url := fmt.Sprintf("http://%s:%s", localIP, *port)
+		png, err := qrcode.Encode(url, qrcode.Medium, 256)
+		if err != nil {
+			http.Error(w, "Error generating QR code", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "image/png")
+		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+		w.Write(png)
+	})
+
 	http.HandleFunc("/ws", hub.handleWebSocket)
 
 	// File upload endpoint
@@ -409,13 +432,24 @@ func main() {
 
 	// Get local IP address
 	localIP := getLocalIP()
+	log.Printf("Server starting on %s", addr)
+	log.Printf("Open http://localhost:%s on your laptop", *port)
 	if localIP != "" {
-		log.Printf("Server starting on %s", addr)
-		log.Printf("Open http://localhost:%s on your laptop", *port)
 		log.Printf("Open http://%s:%s on your phone", localIP, *port)
+		log.Printf("Or scan the QR code in the web interface")
+		fmt.Fprintln(os.Stdout)
+		qrterminal.GenerateWithConfig(fmt.Sprintf("http://%s:%s", localIP, *port), qrterminal.Config{
+			Level:          qrterminal.L,
+			Writer:         os.Stdout,
+			HalfBlocks:     true,
+			BlackChar:      "  ",
+			WhiteChar:      "██",
+			BlackWhiteChar: "▄▄",
+			WhiteBlackChar: "▀▀",
+			QuietZone:      1,
+		})
+		fmt.Fprintln(os.Stdout)
 	} else {
-		log.Printf("Server starting on %s", addr)
-		log.Printf("Open http://localhost:%s on your laptop", *port)
 		log.Printf("Open http://<your-laptop-ip>:%s on your phone", *port)
 	}
 	log.Println("Press Ctrl+C to stop the server")
