@@ -9,10 +9,12 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/mdp/qrterminal/v3"
 )
 
 //go:embed web/*
@@ -412,7 +414,18 @@ func main() {
 	if localIP != "" {
 		log.Printf("Server starting on %s", addr)
 		log.Printf("Open http://localhost:%s on your laptop", *port)
-		log.Printf("Open http://%s:%s on your phone", localIP, *port)
+		log.Printf("Open http://%s:%s on your phone or scan below QR code", localIP, *port)
+
+		qrterminal.GenerateWithConfig(fmt.Sprintf("http://%s:%s", localIP, *port), qrterminal.Config{
+			Level:          qrterminal.L,
+			Writer:         os.Stdout,
+			HalfBlocks:     true,
+			BlackChar:      "  ",
+			WhiteChar:      "██",
+			BlackWhiteChar: "▄▄",
+			WhiteBlackChar: "▀▀",
+			QuietZone:      1,
+		})
 	} else {
 		log.Printf("Server starting on %s", addr)
 		log.Printf("Open http://localhost:%s on your laptop", *port)
