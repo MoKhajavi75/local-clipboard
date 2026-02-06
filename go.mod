@@ -1,9 +1,15 @@
 module local-clipboard
 
-go 1.16
+go 1.24.0
 
 require (
 	github.com/gorilla/websocket v1.5.3
 	github.com/mdp/qrterminal/v3 v3.2.1
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
+)
+
+require (
+	golang.org/x/sys v0.40.0 // indirect
+	golang.org/x/term v0.39.0 // indirect
+	rsc.io/qr v0.2.0 // indirect
 )

@@ -79,7 +79,7 @@ If you prefer to build from source:
 
 ### Prerequisites
 
-- Go 1.16 or later installed
+- Go 1.24.0 or later installed
 - Devices connected to the same local network
 
 ### Build and Run
