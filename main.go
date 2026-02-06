@@ -411,11 +411,12 @@ func main() {
 
 	// Get local IP address
 	localIP := getLocalIP()
+	log.Printf("Server starting on %s", addr)
+	log.Printf("Open http://localhost:%s on your laptop", *port)
 	if localIP != "" {
-		log.Printf("Server starting on %s", addr)
-		log.Printf("Open http://localhost:%s on your laptop", *port)
-		log.Printf("Open http://%s:%s on your phone or scan below QR code", localIP, *port)
-
+		log.Printf("Open http://%s:%s on your phone", localIP, *port)
+		log.Printf("Or scan the QR code in the web interface")
+		fmt.Fprintln(os.Stdout)
 		qrterminal.GenerateWithConfig(fmt.Sprintf("http://%s:%s", localIP, *port), qrterminal.Config{
 			Level:          qrterminal.L,
 			Writer:         os.Stdout,
@@ -426,9 +427,8 @@ func main() {
 			WhiteBlackChar: "▀▀",
 			QuietZone:      1,
 		})
+		fmt.Fprintln(os.Stdout)
 	} else {
-		log.Printf("Server starting on %s", addr)
-		log.Printf("Open http://localhost:%s on your laptop", *port)
 		log.Printf("Open http://<your-laptop-ip>:%s on your phone", *port)
 	}
 	log.Println("Press Ctrl+C to stop the server")
