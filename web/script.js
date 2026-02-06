@@ -444,6 +444,27 @@ function dismissUpdateBanner() {
 document.getElementById('downloadUpdate')?.addEventListener('click', downloadUpdate);
 document.getElementById('dismissUpdate')?.addEventListener('click', dismissUpdateBanner);
 
+// QR code toggle functionality
+const qrToggle = document.getElementById('qrToggle');
+const qrContainer = document.getElementById('qrContainer');
+const qrSection = document.getElementById('qrSection');
+
+// Hide QR section on mobile devices
+if (isMobile()) {
+  qrSection.style.display = 'none';
+} else {
+  qrToggle.addEventListener('click', () => {
+    const isCollapsed = qrContainer.classList.contains('collapsed');
+    if (isCollapsed) {
+      qrContainer.classList.remove('collapsed');
+      qrToggle.textContent = 'Hide QR Code';
+    } else {
+      qrContainer.classList.add('collapsed');
+      qrToggle.textContent = 'Show QR Code';
+    }
+  });
+}
+
 // Check for updates on page load
 checkForUpdates();
 

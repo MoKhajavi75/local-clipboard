@@ -15,6 +15,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/mdp/qrterminal/v3"
+	"github.com/skip2/go-qrcode"
 )
 
 //go:embed web/*
@@ -307,6 +308,26 @@ func main() {
 	http.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
 		w.Write([]byte(Version))
+	})
+
+	// QR code endpoint
+	http.HandleFunc("/qr", func(w http.ResponseWriter, r *http.Request) {
+		localIP := getLocalIP()
+		if localIP == "" {
+			http.Error(w, "Unable to determine local IP", http.StatusInternalServerError)
+			return
+		}
+
+		url := fmt.Sprintf("http://%s:%s", localIP, *port)
+		png, err := qrcode.Encode(url, qrcode.Medium, 256)
+		if err != nil {
+			http.Error(w, "Error generating QR code", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "image/png")
+		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+		w.Write(png)
 	})
 
 	http.HandleFunc("/ws", hub.handleWebSocket)
