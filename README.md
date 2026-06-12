@@ -130,6 +130,25 @@ services:
       - "8080:8080"
 ```
 
+### QR Code Host in Docker
+
+Inside a container `getLocalIP()` returns the container's internal IP (e.g. `172.17.0.x`), which is not reachable from the host or other devices on the LAN. Set `LOCAL_CLIPBOARD_HOST` to the host's reachable address so the QR code and startup logs point clients to the right place:
+
+```bash
+docker run -p 8080:8080 -e LOCAL_CLIPBOARD_HOST=192.168.1.100 ghcr.io/mokhajavi75/local-clipboard:latest
+```
+
+```yaml
+services:
+  local-clipboard:
+    image: ghcr.io/mokhajavi75/local-clipboard:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - LOCAL_CLIPBOARD_HOST=192.168.1.100
+```
+
 ### Behind a Reverse Proxy
 
 When running behind a reverse proxy, configure it to forward the real client IP so sender labels show correctly instead of the Docker gateway IP.

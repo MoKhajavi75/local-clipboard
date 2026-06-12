@@ -426,6 +426,17 @@ func getLocalIP() string {
 	return ""
 }
 
+// advertisedHost returns the host to advertise in the QR code and startup logs.
+// It prefers the LOCAL_CLIPBOARD_HOST environment variable, falling back to the
+// first local private IP address. This allows running inside Docker or behind NAT
+// while still pointing clients at a reachable address.
+func advertisedHost() string {
+	if host := os.Getenv("LOCAL_CLIPBOARD_HOST"); host != "" {
+		return host
+	}
+	return getLocalIP()
+}
+
 func main() {
 	port := flag.String("port", "8080", "Port to run the server on")
 	flag.Parse()
@@ -477,13 +488,13 @@ func main() {
 
 	// QR code endpoint
 	http.HandleFunc("/qr", func(w http.ResponseWriter, r *http.Request) {
-		localIP := getLocalIP()
-		if localIP == "" {
+		host := advertisedHost()
+		if host == "" {
 			http.Error(w, "Unable to determine local IP", http.StatusInternalServerError)
 			return
 		}
 
-		url := fmt.Sprintf("http://%s:%s", localIP, *port)
+		url := fmt.Sprintf("http://%s:%s", host, *port)
 		png, err := qrcode.Encode(url, qrcode.Medium, 256)
 		if err != nil {
 			http.Error(w, "Error generating QR code", http.StatusInternalServerError)
@@ -645,15 +656,15 @@ func main() {
 
 	addr := "0.0.0.0:" + *port
 
-	// Get local IP address
-	localIP := getLocalIP()
+	// Get advertised host for QR code and logs
+	advertised := advertisedHost()
 	log.Printf("Server starting on %s", addr)
 	log.Printf("Open http://localhost:%s on your laptop", *port)
-	if localIP != "" {
-		log.Printf("Open http://%s:%s on your phone", localIP, *port)
+	if advertised != "" {
+		log.Printf("Open http://%s:%s on your phone", advertised, *port)
 		log.Printf("Or scan the QR code in the web interface")
 		fmt.Fprintln(os.Stdout)
-		qrterminal.GenerateWithConfig(fmt.Sprintf("http://%s:%s", localIP, *port), qrterminal.Config{
+		qrterminal.GenerateWithConfig(fmt.Sprintf("http://%s:%s", advertised, *port), qrterminal.Config{
 			Level:          qrterminal.L,
 			Writer:         os.Stdout,
 			HalfBlocks:     true,

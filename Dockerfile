@@ -27,4 +27,9 @@ COPY --from=builder /app/local-clipboard .
 
 EXPOSE 8080
 
+# Set this to the host IP/hostname that clients should use to reach the server.
+# In Docker the container IP is usually not reachable from the host LAN, so pass
+# the host's address with: -e LOCAL_CLIPBOARD_HOST=192.168.1.100
+ENV LOCAL_CLIPBOARD_HOST=""
+
 ENTRYPOINT ["./local-clipboard"]
