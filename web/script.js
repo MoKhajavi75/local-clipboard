@@ -8,6 +8,7 @@ const intervalSelect = document.getElementById('intervalSelect');
 const countdownDisplay = document.getElementById('countdownDisplay');
 const pauseResumeBtn = document.getElementById('pauseResumeBtn');
 const clearNowBtn = document.getElementById('clearNowBtn');
+const dropOverlay = document.getElementById('dropOverlay');
 
 let ws = null;
 const ownMessageIds = new Set();
@@ -415,15 +416,20 @@ function clearFiles(animated = true) {
   }
 }
 
-fileInput.addEventListener('change', e => {
-  const files = Array.from(e.target.files || []);
-  for (const file of files) {
+function addFilesFromFileList(fileList) {
+  if (!fileList || fileList.length === 0) return;
+  for (const file of fileList) {
     selectedFiles.push({ id: ++fileChipIdCounter, file });
   }
-  // Reset input so selecting the same file again still fires change
-  fileInput.value = '';
   renderAttachments();
   updateSendButton();
+  messageInput.focus();
+}
+
+fileInput.addEventListener('change', e => {
+  addFilesFromFileList(e.target.files);
+  // Reset input so selecting the same file again still fires change
+  fileInput.value = '';
 });
 
 sendButton.addEventListener('click', sendMessage);
@@ -616,6 +622,52 @@ pauseResumeBtn.addEventListener('click', () => {
 
 clearNowBtn.addEventListener('click', () => {
   fetch('/clear', { method: 'POST' }).catch(err => console.error('Failed to clear:', err));
+});
+
+// Drag and drop file upload
+let dragCounter = 0;
+
+function showDropOverlay() {
+  if (dropOverlay) {
+    dropOverlay.style.display = 'flex';
+  }
+}
+
+function hideDropOverlay() {
+  if (dropOverlay) {
+    dropOverlay.style.display = 'none';
+  }
+}
+
+window.addEventListener('dragenter', e => {
+  e.preventDefault();
+  dragCounter++;
+  if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+    showDropOverlay();
+  }
+});
+
+window.addEventListener('dragover', e => {
+  e.preventDefault();
+});
+
+window.addEventListener('dragleave', e => {
+  e.preventDefault();
+  dragCounter--;
+  if (dragCounter <= 0) {
+    dragCounter = 0;
+    hideDropOverlay();
+  }
+});
+
+window.addEventListener('drop', e => {
+  e.preventDefault();
+  dragCounter = 0;
+  hideDropOverlay();
+
+  if (e.dataTransfer) {
+    addFilesFromFileList(e.dataTransfer.files);
+  }
 });
 
 // Check for updates on page load
