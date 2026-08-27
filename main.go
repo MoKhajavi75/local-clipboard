@@ -11,6 +11,8 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/exec"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -437,8 +439,36 @@ func advertisedHost() string {
 	return getLocalIP()
 }
 
+// openBrowser opens rawURL in the user's default browser. It returns an error
+// when the platform is unsupported or the launcher command fails.
+func openBrowser(rawURL string) error {
+	switch runtime.GOOS {
+	case "darwin":
+		return exec.Command("open", rawURL).Start()
+	case "windows":
+		return exec.Command("rundll32", "url.dll,FileProtocolHandler", rawURL).Start()
+	case "linux":
+		return exec.Command("xdg-open", rawURL).Start()
+	default:
+		return fmt.Errorf("unsupported platform: %s", runtime.GOOS)
+	}
+}
+
+// canOpenBrowser reports whether launching a browser makes sense here. It is
+// false inside containers and on headless Linux, where no display is attached.
+func canOpenBrowser() bool {
+	if _, err := os.Stat("/.dockerenv"); err == nil {
+		return false
+	}
+	if runtime.GOOS == "linux" && os.Getenv("DISPLAY") == "" && os.Getenv("WAYLAND_DISPLAY") == "" {
+		return false
+	}
+	return true
+}
+
 func main() {
 	port := flag.String("port", "8080", "Port to run the server on")
+	open := flag.Bool("open", true, "Open the app in the default browser on startup")
 	flag.Parse()
 
 	fileStore := newFileStore()
@@ -680,7 +710,21 @@ func main() {
 	}
 	log.Println("Press Ctrl+C to stop the server")
 
-	if err := http.ListenAndServe(addr, nil); err != nil {
+	ln, err := net.Listen("tcp", addr)
+	if err != nil {
+		log.Fatal("Server failed to start: ", err)
+	}
+
+	// The listener is already queueing connections, so the browser can be
+	// launched before Serve blocks without racing the first request.
+	if *open && os.Getenv("LOCAL_CLIPBOARD_NO_OPEN") == "" && canOpenBrowser() {
+		localURL := fmt.Sprintf("http://localhost:%s", *port)
+		if err := openBrowser(localURL); err != nil {
+			log.Printf("Could not open browser automatically: %v", err)
+		}
+	}
+
+	if err := http.Serve(ln, nil); err != nil {
 		log.Fatal("Server failed to start: ", err)
 	}
 }

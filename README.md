@@ -43,6 +43,9 @@ chmod +x ./local-clipboard-*
 
 # Or with custom port
 ./local-clipboard-* -port 3000
+
+# Skip opening the browser on startup
+./local-clipboard-* -open=false
 ```
 
 **Windows:**
@@ -53,9 +56,12 @@ local-clipboard-*.exe
 
 # Or with custom port
 local-clipboard-*.exe -port 3000
+
+# Skip opening the browser on startup
+local-clipboard-*.exe -open=false
 ```
 
-The terminal will display the server URLs for both localhost and your local network IP.
+The terminal will display the server URLs for both localhost and your local network IP, and opens the app in your default browser. Disable that with `-open=false` or `LOCAL_CLIPBOARD_NO_OPEN=1`.
 
 ## Usage
 
