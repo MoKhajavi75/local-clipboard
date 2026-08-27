@@ -1,4 +1,4 @@
-.PHONY: help run build update vet
+.PHONY: help run build update vet modernize modernize-fix lint
 
 # Default port
 PORT ?= 8080
@@ -45,12 +45,26 @@ update: ## Update dependencies
 	@go mod tidy
 	@echo "Dependencies updated."
 
-vet: ## Run static analysis (go vet + modernize if available)
-	@if command -v modernize >/dev/null 2>&1; then \
-		go vet -vettool=$$(command -v modernize) ./...; \
-	else \
-		echo "modernize not found, running plain go vet"; \
-		go vet ./...; \
+# Tools are pinned in go.mod under the `tool` directive and run with `go tool`.
+# Nothing needs installing, and every machine gets the same version.
+# `go get -tool <pkg>@<ver>` adds one, `go tool` lists them.
+
+vet: ## Run go vet
+	@go vet ./...
+
+modernize: ## Report code that predates a newer stdlib idiom
+	@out=$$(go tool modernize ./... 2>&1); \
+	if [ -n "$$out" ]; then \
+		echo "$$out"; \
+		echo ""; \
+		echo "run 'make modernize-fix' to apply these"; \
+		exit 1; \
 	fi
+	@echo "modernize: clean"
+
+modernize-fix: ## Apply modernize's suggestions
+	@go tool modernize -fix ./...
+
+lint: vet modernize ## Run static analysis (go vet + modernize)
 
 .DEFAULT_GOAL := help
